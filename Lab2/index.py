@@ -1,9 +1,9 @@
 import numpy as np
 from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.tree import DecisionTreeClassifier 
 from sklearn.metrics import accuracy_score
 
-# Krok 1: Generowanie danych
+# Krok 1: Generowanie danych 
 X_raw = np.random.randint(1, 1000, (500, 1))
 y = (1 * (X_raw % 3 == 0) + 2 * (X_raw % 5 == 0)).ravel().astype(int)
 
@@ -17,9 +17,9 @@ X_train, X_test, y_train, y_test = train_test_split(
     X_features, y, test_size=0.2, random_state=42, stratify=y
 )
 
-model = RandomForestClassifier(n_estimators=100, random_state=42)
+model = DecisionTreeClassifier(random_state=42)
 model.fit(X_train, y_train)
-print("Model został pomyślnie wytrenowany.")
+print("Model (Drzewo Decyzyjne) został pomyślnie wytrenowany.")
 
 # Krok 4: Ocena skuteczności modelu na zbiorze testowym
 y_pred = model.predict(X_test)
@@ -28,7 +28,6 @@ print(f"Dokładność modelu na zbiorze testowym: {accuracy:.4f}\n")
 
 
 def predict_number_class(trained_model, number):
-
     feature1 = int(number % 3 == 0)
     feature2 = int(number % 5 == 0)
     
