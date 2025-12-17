@@ -18,7 +18,7 @@ return X.reshape(n_samples, timesteps, 1), y
 X, y = generate_lighting_data()
 # Podział na zbiory
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-# --- Model LSTM do klasyfikacji binarnej (Listing 2) [cite: 16] ---
+# --- Model LSTM do klasyfikacji binarnej 
 model = Sequential()
 model.add(LSTM(32, input_shape=(X.shape[1], 1)))
 model.add(Dense(1, activation='sigmoid'))
