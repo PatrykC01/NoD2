@@ -57,13 +57,36 @@ best_k = 8
 kmeans_final = KMeans(n_clusters=best_k, random_state=42, n_init=10)
 labels_kmeans = kmeans_final.fit_predict(X_scaled)
 
-db_final = DBSCAN(eps=0.5, min_samples=16)
+print("\n--- Testowanie parametrów DBSCAN ---")
+eps_values = [0.5, 0.7, 1.0, 1.2, 1.5, 2.0]
+best_eps = 0.5
+best_score = -1
+
+for eps in eps_values:
+    db = DBSCAN(eps=eps, min_samples=16)
+    labels = db.fit_predict(X_scaled)
+    
+    unique_labels = set(labels)
+    if len(unique_labels) > 1 and len(unique_labels) < len(X_scaled):
+        score = silhouette_score(X_scaled, labels)
+        n_clusters = len(unique_labels) - (1 if -1 in labels else 0)
+        n_noise = list(labels).count(-1)
+        print(f"eps={eps}: Klastry={n_clusters}, Szum={n_noise}, Silhouette={score:.3f}")
+        
+        if score > best_score:
+            best_score = score
+            best_eps = eps
+    else:
+        print(f"eps={eps}: Brak sensownego podziału (tylko szum lub 1 grupa)")
+
+db_final = DBSCAN(eps=best_eps, min_samples=16)
 labels_dbscan = db_final.fit_predict(X_scaled)
 
 agg_clustering = AgglomerativeClustering(n_clusters=best_k, metric='euclidean', linkage='ward')
 labels_agg = agg_clustering.fit_predict(X_scaled)
 
 results = []
+
 def evaluate_model(name, labels, X):
     if len(set(labels)) < 2: return [name, np.nan, np.nan, np.nan]
     sil = silhouette_score(X, labels)
